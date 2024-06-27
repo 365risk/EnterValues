@@ -19,7 +19,8 @@ import java.util.concurrent.atomic.AtomicLong;
 public class IndustryController {
 
     private static final String JSON_FILE_PATH = "src/main/resources/data.json";
-    private static final String IMAGE_DIR_PATH = "D:" + File.separator + "eclipse jee" + File.separator + "Reactjs" + File.separator + "365risk" + File.separator + "public" + File.separator + "images" + File.separator;
+   // private static final String IMAGE_DIR_PATH = "D:" + File.separator + "eclipse jee" + File.separator + "Reactjs" + File.separator + "365risk" + File.separator + "public" + File.separator + "images" + File.separator;
+      private static final String IMAGE_DIR_PATH = "https://gramanagendra.github.io/365risk/images/";
     private static final AtomicLong counter = new AtomicLong(0);
     private static List<Industry> industries = new ArrayList<>();
 
