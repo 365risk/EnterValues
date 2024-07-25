@@ -6,17 +6,17 @@ import java.util.List;
 public class Industry {
     private Long id;
     private String name;
-    private String description;
+    private String descriptionHtml; // HTML description file path
     private String imagePath; // Path to the image
     private List<Risk> risks = new ArrayList<>();
 
     public Industry() {
     }
 
-    public Industry(Long id, String name, String description) {
+    public Industry(Long id, String name, String descriptionHtml) {
         this.id = id;
         this.name = name;
-        this.description = description;
+        this.descriptionHtml = descriptionHtml;
     }
 
     // Getters and Setters
@@ -37,12 +37,12 @@ public class Industry {
         this.name = name;
     }
 
-    public String getDescription() {
-        return description;
+    public String getDescriptionHtml() {
+        return descriptionHtml;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setDescriptionHtml(String descriptionHtml) {
+        this.descriptionHtml = descriptionHtml;
     }
 
     public String getImagePath() {

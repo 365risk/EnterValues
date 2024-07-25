@@ -1,28 +1,29 @@
 package com.example.demo;
 
-import org.springframework.web.bind.annotation.*;
-import org.springframework.web.multipart.MultipartFile;
 import org.json.JSONArray;
 import org.json.JSONObject;
+import org.springframework.http.ResponseEntity;
+import org.springframework.web.bind.annotation.*;
+import org.springframework.web.multipart.MultipartFile;
 
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.FileWriter;
-import java.io.IOException;
+import java.io.*;
 import java.nio.file.Files;
-import java.util.ArrayList;
-import java.util.List;
+import java.nio.file.Paths;
+import java.util.*;
 import java.util.concurrent.atomic.AtomicLong;
+import java.util.logging.Level;
+import java.util.logging.Logger;
 
 @RestController
 @RequestMapping("/api/industries")
 public class IndustryController {
 
-    private static final String JSON_FILE_PATH = "src/main/resources/data.json";
-   // private static final String IMAGE_DIR_PATH = "D:" + File.separator + "eclipse jee" + File.separator + "Reactjs" + File.separator + "365risk" + File.separator + "public" + File.separator + "images" + File.separator;
-      private static final String IMAGE_DIR_PATH = "https://gramanagendra.github.io/365risk/images/";
+    private static final String HTML_DIR_PATH = "https://github.com/GRamaNagendra/EnterValues/blob/fbc30e4544b92eddc4250ac839dbd9ab2eb50b9c/src/main/resources/html";
+    private static final String IMAGE_DIR_PATH = "https://github.com/GRamaNagendra/EnterValues/blob/fbc30e4544b92eddc4250ac839dbd9ab2eb50b9c/src/main/resources/images";
     private static final AtomicLong counter = new AtomicLong(0);
     private static List<Industry> industries = new ArrayList<>();
+
+    private static final Logger LOGGER = Logger.getLogger(IndustryController.class.getName());
 
     static {
         loadIndustriesFromFile();
@@ -35,23 +36,13 @@ public class IndustryController {
 
     @PostMapping
     public Industry addIndustry(@RequestParam String name,
-                                @RequestParam String description,
+                                @RequestParam String descriptionHtml,
                                 @RequestParam(required = false) MultipartFile image) {
-        Industry newIndustry = new Industry(counter.incrementAndGet(), name, description);
+        LOGGER.log(Level.INFO, "Adding industry with name: {0}", name);
 
-        if (image != null && !image.isEmpty()) {
-            try {
-                String imageName = newIndustry.getId() + "_" + image.getOriginalFilename();
-                File imageFile = new File(IMAGE_DIR_PATH + imageName);
-                imageFile.getParentFile().mkdirs(); // Ensure the directory exists
-                try (FileOutputStream fos = new FileOutputStream(imageFile)) {
-                    fos.write(image.getBytes());
-                }
-                newIndustry.setImagePath("images/" + imageName); // Set image path relative to 'images/'
-            } catch (IOException e) {
-                e.printStackTrace();
-            }
-        }
+        Industry newIndustry = new Industry(counter.incrementAndGet(), name, name + ".html");
+        saveDescriptionHtml(descriptionHtml, HTML_DIR_PATH + name + ".html");
+        saveImageAndSetImagePath(image, newIndustry);
 
         industries.add(newIndustry);
         saveIndustriesToFile();
@@ -69,52 +60,98 @@ public class IndustryController {
     @PutMapping("/{id}")
     public Industry updateIndustry(@PathVariable Long id,
                                    @RequestParam String name,
-                                   @RequestParam String description,
+                                   @RequestParam String descriptionHtml,
                                    @RequestParam(required = false) MultipartFile image) {
-        Industry industry = industries.stream()
+        Industry industryToUpdate = industries.stream()
                 .filter(ind -> ind.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Industry not found with id: " + id));
 
-        industry.setName(name);
-        industry.setDescription(description);
+        String oldDescriptionPath = industryToUpdate.getDescriptionHtml();
+        String newDescriptionPath = name + ".html";
+        industryToUpdate.setName(name);
+        industryToUpdate.setDescriptionHtml(newDescriptionPath);
+
+        if (!oldDescriptionPath.equals(newDescriptionPath)) {
+            String oldFilePath = HTML_DIR_PATH + oldDescriptionPath;
+            deleteDescriptionHtml(oldFilePath);
+        }
+        saveDescriptionHtml(descriptionHtml, HTML_DIR_PATH + newDescriptionPath);
 
         if (image != null && !image.isEmpty()) {
-            try {
-                String imageName = id + "_" + image.getOriginalFilename();
-                File imageFile = new File(IMAGE_DIR_PATH + imageName);
-                imageFile.getParentFile().mkdirs(); // Ensure the directory exists
-                try (FileOutputStream fos = new FileOutputStream(imageFile)) {
-                    fos.write(image.getBytes());
-                }
-                industry.setImagePath("images/" + imageName); // Set image path relative to 'images/'
-            } catch (IOException e) {
-                e.printStackTrace();
+            if (industryToUpdate.getImagePath() != null) {
+                String oldImagePath = IMAGE_DIR_PATH + industryToUpdate.getImagePath();
+                deleteImage(oldImagePath);
             }
+            String imageFileName =  image.getOriginalFilename();
+            saveImage(image, IMAGE_DIR_PATH + imageFileName);
+            industryToUpdate.setImagePath("images/" + imageFileName);
         }
 
         saveIndustriesToFile();
-        return industry;
+        return industryToUpdate;
     }
 
     @DeleteMapping("/{id}")
     public void deleteIndustry(@PathVariable Long id) {
-        industries.removeIf(industry -> industry.getId().equals(id));
-        saveIndustriesToFile();
-    }
-
-    @PostMapping("/{id}/risks")
-    public Risk addRiskToIndustry(@PathVariable Long id, @RequestBody Risk riskData) {
         Industry industry = industries.stream()
                 .filter(ind -> ind.getId().equals(id))
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Industry not found with id: " + id));
 
-        Risk newRisk = new Risk(counter.incrementAndGet(), riskData.getRiskName(), riskData.getDescription(), riskData.getIdentification(), riskData.getControl(), riskData.getMitigation());
+        if (industry.getImagePath() != null) {
+            String imagePath = IMAGE_DIR_PATH + industry.getImagePath();
+            deleteImage(imagePath);
+        }
+
+        if (industry.getDescriptionHtml() != null) {
+            String htmlPath = HTML_DIR_PATH + industry.getDescriptionHtml();
+            deleteDescriptionHtml(htmlPath);
+        }
+
+        for (Risk risk : industry.getRisks()) {
+            if (risk.getDescriptionPath() != null) {
+                String riskHtmlPath = HTML_DIR_PATH + risk.getDescriptionPath();
+                deleteDescriptionHtml(riskHtmlPath);
+            }
+            if (risk.getImagePath() != null) {
+                String riskImagePath = IMAGE_DIR_PATH + risk.getImagePath();
+                deleteImage(riskImagePath);
+            }
+        }
+
+        industries.removeIf(ind -> ind.getId().equals(id));
+        saveIndustriesToFile();
+    }
+
+    @PostMapping("/{id}/risks")
+    public ResponseEntity<Risk> addRiskToIndustry(
+            @PathVariable Long id,
+            @RequestParam String riskName,
+            @RequestParam String riskDetails,
+            @RequestParam(required = false) MultipartFile riskImage) {
+
+        Industry industry = industries.stream()
+                .filter(ind -> ind.getId().equals(id))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Industry not found with id: " + id));
+
+        Risk newRisk = new Risk(counter.incrementAndGet(), riskName, riskDetails);
+
+        String descriptionFileName = riskName + ".html";
+        saveDescriptionHtml(riskDetails, HTML_DIR_PATH + descriptionFileName);
+        newRisk.setDescriptionPath("html/" + descriptionFileName);
+
+        if (riskImage != null && !riskImage.isEmpty()) {
+            String imageFileName =  riskImage.getOriginalFilename();
+            saveImage(riskImage, IMAGE_DIR_PATH + imageFileName);
+            newRisk.setImagePath("images/" + imageFileName);
+        }
+
         industry.getRisks().add(newRisk);
         saveIndustriesToFile();
 
-        return newRisk;
+        return ResponseEntity.ok(newRisk);
     }
 
     @GetMapping("/{industryId}/risks/{riskId}")
@@ -131,7 +168,12 @@ public class IndustryController {
     }
 
     @PutMapping("/{industryId}/risks/{riskId}")
-    public Risk updateRiskInIndustry(@PathVariable Long industryId, @PathVariable Long riskId, @RequestBody Risk updatedRisk) {
+    public ResponseEntity<Risk> updateRiskInIndustry(@PathVariable Long industryId,
+                                                     @PathVariable Long riskId,
+                                                     @RequestParam String riskName,
+                                                     @RequestParam String riskDetails,
+                                                     @RequestParam(required = false) MultipartFile riskImage) {
+
         Industry industry = industries.stream()
                 .filter(ind -> ind.getId().equals(industryId))
                 .findFirst()
@@ -142,14 +184,31 @@ public class IndustryController {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Risk not found with id: " + riskId));
 
-        existingRisk.setRiskName(updatedRisk.getRiskName());
-        existingRisk.setDescription(updatedRisk.getDescription());
-        existingRisk.setIdentification(updatedRisk.getIdentification());
-        existingRisk.setControl(updatedRisk.getControl());
-        existingRisk.setMitigation(updatedRisk.getMitigation());
+        String oldDescriptionPath = existingRisk.getRiskName() + ".html"; 
+       System.out.println(oldDescriptionPath);
+        String newDescriptionPath = "html/" + riskName + ".html";
+        existingRisk.setRiskName(riskName);
+        existingRisk.setRiskDetails(riskDetails);
+
+        if (oldDescriptionPath != null && !oldDescriptionPath.equals(newDescriptionPath)) {
+            String oldFilePath = HTML_DIR_PATH + oldDescriptionPath;
+            deleteDescriptionHtml(oldFilePath);
+        }
+        saveDescriptionHtml(riskDetails, HTML_DIR_PATH + riskName + ".html");
+        existingRisk.setDescriptionPath(newDescriptionPath);
+
+        if (riskImage != null && !riskImage.isEmpty()) {
+            if (existingRisk.getImagePath() != null) {
+                String oldImagePath = IMAGE_DIR_PATH + existingRisk.getImagePath();
+                deleteImage(oldImagePath);
+            }
+            String imageFileName =  riskImage.getOriginalFilename();
+            saveImage(riskImage, IMAGE_DIR_PATH + imageFileName);
+            existingRisk.setImagePath("images/" + imageFileName);
+        }
 
         saveIndustriesToFile();
-        return existingRisk;
+        return ResponseEntity.ok(existingRisk);
     }
 
     @DeleteMapping("/{industryId}/risks/{riskId}")
@@ -159,76 +218,149 @@ public class IndustryController {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Industry not found with id: " + industryId));
 
-        industry.getRisks().removeIf(risk -> risk.getId().equals(riskId));
+        Risk risk = industry.getRisks().stream()
+                .filter(r -> r.getId().equals(riskId))
+                .findFirst()
+                .orElseThrow(() -> new RuntimeException("Risk not found with id: " + riskId));
+
+        if (risk.getRiskName() != null) {
+            String descriptionPath = HTML_DIR_PATH + risk.getRiskName() + ".html";
+            deleteDescriptionHtml(descriptionPath);
+        }
+        if (risk.getImagePath() != null) {
+            String imagePath = IMAGE_DIR_PATH + risk.getImagePath();
+            deleteImage(imagePath);
+        }
+
+        industry.getRisks().removeIf(r -> r.getId().equals(riskId));
         saveIndustriesToFile();
     }
 
-    private static void saveIndustriesToFile() {
-        try (FileWriter writer = new FileWriter(JSON_FILE_PATH)) {
-            JSONArray jsonArray = new JSONArray();
-            for (Industry industry : industries) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id", industry.getId());
-                jsonObject.put("name", industry.getName());
-                jsonObject.put("description", industry.getDescription());
-                jsonObject.put("imagePath", industry.getImagePath());
-
-                JSONArray risksArray = new JSONArray();
-                for (Risk risk : industry.getRisks()) {
-                    JSONObject riskObject = new JSONObject();
-                    riskObject.put("id", risk.getId());
-                    riskObject.put("riskName", risk.getRiskName());
-                    riskObject.put("description", risk.getDescription());
-                    riskObject.put("identification", risk.getIdentification());
-                    riskObject.put("control", risk.getControl());
-                    riskObject.put("mitigation", risk.getMitigation());
-                    risksArray.put(riskObject);
-                }
-                jsonObject.put("risks", risksArray);
-
-                jsonArray.put(jsonObject);
-            }
-            JSONObject jsonRoot = new JSONObject();
-            jsonRoot.put("industries", jsonArray);
-            writer.write(jsonRoot.toString(4));
-        } catch (IOException e) {
-            e.printStackTrace();
+    private void saveImageAndSetImagePath(MultipartFile image, Industry industry) {
+        if (image != null && !image.isEmpty()) {
+            String imageFileName =  image.getOriginalFilename();
+            saveImage(image, IMAGE_DIR_PATH + imageFileName);
+            industry.setImagePath("images/" + imageFileName);
         }
     }
 
+    private void saveDescriptionHtml(String htmlContent, String filePath) {
+        try (FileWriter fileWriter = new FileWriter(filePath)) {
+            fileWriter.write(htmlContent);
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to save HTML description", e);
+        }
+    }
+
+    private void deleteDescriptionHtml(String filePath) {
+        try {
+            Files.deleteIfExists(Paths.get(filePath));
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to delete HTML description", e);
+        }
+    }
+
+    private void saveImage(MultipartFile image, String filePath) {
+        try (InputStream inputStream = image.getInputStream();
+             OutputStream outputStream = new FileOutputStream(filePath)) {
+            byte[] buffer = new byte[1024];
+            int bytesRead;
+            while ((bytesRead = inputStream.read(buffer)) != -1) {
+                outputStream.write(buffer, 0, bytesRead);
+            }
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to save image", e);
+        }
+    }
+
+    private void deleteImage(String filePath) {
+        try {
+            Files.deleteIfExists(Paths.get(filePath));
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to delete image", e);
+        }
+    }
+
+    private void saveIndustriesToFile() {
+        try (BufferedWriter bufferedWriter = new BufferedWriter(new FileWriter("src/main/resources/industries.json"))) {
+            bufferedWriter.write("[\n"); // Start the array
+            boolean firstIndustry = true;
+
+            for (Industry industry : industries) {
+                if (!firstIndustry) {
+                    bufferedWriter.write(",\n"); // Add a comma between JSON objects
+                }
+                firstIndustry = false;
+
+                JSONObject industryJson = new JSONObject();
+                industryJson.put("id", industry.getId());
+                industryJson.put("name", industry.getName());
+                industryJson.put("descriptionHtml", industry.getDescriptionHtml());
+                industryJson.put("imagePath", industry.getImagePath());
+
+                JSONArray risksArray = new JSONArray();
+                for (Risk risk : industry.getRisks()) {
+                    JSONObject riskJson = new JSONObject();
+                    riskJson.put("id", risk.getId());
+                    riskJson.put("riskName", risk.getRiskName());
+                    riskJson.put("riskDetails", risk.getRiskDetails());
+                    riskJson.put("descriptionPath", risk.getDescriptionPath());
+                    riskJson.put("imagePath", risk.getImagePath());
+                    risksArray.put(riskJson);
+                }
+                industryJson.put("risks", risksArray);
+
+                // Convert to pretty-printed JSON string and write to file
+                String industryJsonPretty = industryJson.toString(4); // Indent with 4 spaces
+                bufferedWriter.write(industryJsonPretty);
+            }
+            
+            bufferedWriter.write("\n]"); // End the array
+        } catch (IOException e) {
+            LOGGER.log(Level.SEVERE, "Failed to save industries to file", e);
+        }
+    }
+
+
     private static void loadIndustriesFromFile() {
         try {
-            File file = new File(JSON_FILE_PATH);
+            File file = new File("src/main/resources/industries.json");
             if (file.exists()) {
-                String content = new String(Files.readAllBytes(file.toPath()));
-                JSONObject jsonRoot = new JSONObject(content);
-                JSONArray jsonArray = jsonRoot.getJSONArray("industries");
+                byte[] bytes = Files.readAllBytes(file.toPath());
+                String jsonString = new String(bytes);
+                JSONArray industriesArray = new JSONArray(jsonString);
 
-                for (int i = 0; i < jsonArray.length(); i++) {
-                    JSONObject jsonObject = jsonArray.getJSONObject(i);
-                    Industry industry = new Industry();
-                    industry.setId(jsonObject.getLong("id"));
-                    industry.setName(jsonObject.getString("name"));
-                    industry.setDescription(jsonObject.getString("description"));
-                    industry.setImagePath(jsonObject.optString("imagePath", null));
+                industries = new ArrayList<>();
+                for (int i = 0; i < industriesArray.length(); i++) {
+                    JSONObject industryJson = industriesArray.getJSONObject(i);
+                    Industry industry = new Industry(
+                            industryJson.getLong("id"),
+                            industryJson.getString("name"),
+                            industryJson.getString("descriptionHtml")
+                    );
+                    industry.setImagePath(industryJson.optString("imagePath", null));
 
-                    JSONArray risksArray = jsonObject.getJSONArray("risks");
-                    for (int j = 0; j < risksArray.length(); j++) {
-                        JSONObject riskObject = risksArray.getJSONObject(j);
-                        Risk risk = new Risk();
-                        risk.setId(riskObject.getLong("id"));
-                        risk.setRiskName(riskObject.getString("riskName"));
-                        risk.setDescription(riskObject.getString("description"));
-                        risk.setIdentification(riskObject.getString("identification"));
-                        risk.setControl(riskObject.getString("control"));
-                        risk.setMitigation(riskObject.getString("mitigation"));
-                        industry.getRisks().add(risk);
+                    JSONArray risksArray = industryJson.optJSONArray("risks");
+                    List<Risk> risks = new ArrayList<>();
+                    if (risksArray != null) {
+                        for (int j = 0; j < risksArray.length(); j++) {
+                            JSONObject riskJson = risksArray.getJSONObject(j);
+                            Risk risk = new Risk(
+                                    riskJson.getLong("id"),
+                                    riskJson.getString("riskName"),
+                                    riskJson.getString("riskDetails")
+                            );
+                            risk.setDescriptionPath(riskJson.optString("descriptionPath", null));
+                            risk.setImagePath(riskJson.optString("imagePath", null));
+                            risks.add(risk);
+                        }
                     }
+                    industry.setRisks(risks);
                     industries.add(industry);
                 }
             }
         } catch (IOException e) {
-            e.printStackTrace();
+            LOGGER.log(Level.SEVERE, "Failed to load industries from file", e);
         }
     }
 }

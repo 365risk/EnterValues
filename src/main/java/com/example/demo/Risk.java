@@ -1,21 +1,33 @@
 package com.example.demo;
 
 public class Risk {
+
     private Long id;
     private String riskName;
-    private String description;
-    private String identification;
-    private String control;
-    private String mitigation;
+    private String riskDetails;
+    private String imagePath;
 
     public Risk() {
+        // Default constructor
     }
 
+    public Risk(Long id, String riskName, String riskDetails) {
+        this.id = id;
+        this.riskName = riskName;
+        this.riskDetails = riskDetails;
+    }
 
+    // Getters and setters
 
-    // Getters and Setters
+    public Risk(long long1, String string, String string2, String optString, String optString2) {
+		// TODO Auto-generated constructor stub
+	}
 
-    public Long getId() {
+	public Risk(String name, String descriptionPath) {
+		// TODO Auto-generated constructor stub
+	}
+
+	public Long getId() {
         return id;
     }
 
@@ -23,57 +35,37 @@ public class Risk {
         this.id = id;
     }
 
-    public String getDescription() {
-        return description;
+    public String getRiskName() {
+        return riskName;
     }
 
-    public void setDescription(String description) {
-        this.description = description;
+    public void setRiskName(String riskName) {
+        this.riskName = riskName;
     }
 
-    public String getIdentification() {
-        return identification;
+    public String getRiskDetails() {
+        return riskDetails;
     }
 
-    public void setIdentification(String identification) {
-        this.identification = identification;
+    public void setRiskDetails(String riskDetails) {
+        this.riskDetails = riskDetails;
     }
 
-    public String getControl() {
-        return control;
+    public String getImagePath() {
+        return imagePath;
     }
 
-    public void setControl(String control) {
-        this.control = control;
+    public void setImagePath(String imagePath) {
+        this.imagePath = imagePath;
     }
 
-    public String getMitigation() {
-        return mitigation;
-    }
-
-    public void setMitigation(String mitigation) {
-        this.mitigation = mitigation;
-    }
-
-	public String getRiskName() {
-		return riskName;
+	public String getDescriptionPath() {
+		// TODO Auto-generated method stub
+		return null;
 	}
 
-	public void setRiskName(String riskName) {
-		this.riskName = riskName;
+	public void setDescriptionPath(String string) {
+		// TODO Auto-generated method stub
+		
 	}
-
-	public Risk(Long id, String riskName, String description, String identification, String control,
-			String mitigation) {
-		super();
-		this.id = id;
-		this.riskName = riskName;
-		this.description = description;
-		this.identification = identification;
-		this.control = control;
-		this.mitigation = mitigation;
-	}
-	
-	
-	
 }

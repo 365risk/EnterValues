@@ -14,8 +14,9 @@ public class CorsConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedOrigins("https://gramanagendra.github.io")  // Allow requests from React frontend
-                        .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                //  .allowedOrigins("http://localhost:3000")  Allow requests from React frontend
+               .allowedOrigins("https://gramanagendra.github.io")  // Allow requests from React frontend
+                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
                         .allowedHeaders("*")
                         .allowCredentials(true);
             }

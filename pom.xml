@@ -30,6 +30,12 @@
     <version>20210307</version>
 </dependency>
 
+<dependency>
+    <groupId>org.springframework.boot</groupId>
+    <artifactId>spring-boot-devtools</artifactId>
+    <scope>runtime</scope>
+    <optional>true</optional>
+</dependency>
 
 
     <dependency>
@@ -54,12 +60,11 @@
     </dependency>
 
     <!-- MySQL Connector -->
-       <dependency>
-        <groupId>mysql</groupId>
-        <artifactId>mysql-connector-java</artifactId>
-        <version>8.0.28</version> <!-- Replace with appropriate version -->
-    </dependency>
-
+     <dependency>
+    <groupId>mysql</groupId>
+    <artifactId>mysql-connector-java</artifactId>
+    <version>8.0.32</version> <!-- Use the latest stable version -->
+</dependency>
 
          
 
