@@ -18,7 +18,7 @@ import java.util.logging.Logger;
 @RequestMapping("/api/industries")
 public class IndustryController {
 
-    private static final String HTML_DIR_PATH = "https://raw.githubusercontent.com/GRamaNagendra/EnterValues/main/src/main/resources/html/";
+    private static final String HTML_DIR_PATH = "src/main/resources/html/";
     private static final String IMAGE_DIR_PATH = "src/main/resources/images/";
     private static final String COUNTER_FILE_PATH = "src/main/resources/counter.txt";
     private static final AtomicLong counter = new AtomicLong(0);
