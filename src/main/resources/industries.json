@@ -1,50 +1,11 @@
-[
-{
-    "risks": [],
-    "imagePath": "images/2.png",
+[{
+    "risks": [{
+        "riskName": "DDFDF",
+        "riskDetails": "<p>ADDFAD<\/p>",
+        "id": 25
+    }],
+    "imagePath": "",
     "name": "a",
     "descriptionHtml": "a.html",
-    "id": 1
-},
-{
-    "risks": [],
-    "imagePath": "images/8.png",
-    "name": "fb",
-    "descriptionHtml": "fb.html",
-    "id": 2
-},
-{
-    "risks": [],
-    "imagePath": "images/365risk.jpg",
-    "name": "a",
-    "descriptionHtml": "a.html",
-    "id": 1
-},
-{
-    "risks": [],
-    "imagePath": "images/365risk.jpg",
-    "name": "d",
-    "descriptionHtml": "d.html",
-    "id": 1
-},
-{
-    "risks": [],
-    "name": "new",
-    "descriptionHtml": "new.html",
-    "id": 2
-},
-{
-    "risks": [],
-    "imagePath": "images/demo.png",
-    "name": "dd",
-    "descriptionHtml": "dd.html",
-    "id": 1
-},
-{
-    "risks": [],
-    "imagePath": "images/Screenshot 2022-11-06 212408.png",
-    "name": "working",
-    "descriptionHtml": "working.html",
-    "id": 2
-}
-]
+    "id": 24
+}]

@@ -14,11 +14,11 @@ public class CorsConfiguration {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                //  .allowedOrigins("http://localhost:3000")  Allow requests from React frontend
-               .allowedOrigins("https://gramanagendra.github.io")  // Allow requests from React frontend
-                .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
-                        .allowedHeaders("*")
-                        .allowCredentials(true);
+                  .allowedOrigins("http://localhost:3000", "https://gramanagendra.github.io","https://fantastic-halibut-6jqrr9v54q7f4jww-8080.app.github.dev/images/demo.png")  // Allow requests from React frontend
+                   
+                    .allowedMethods("GET", "POST", "PUT", "DELETE", "OPTIONS")
+                    .allowedHeaders("*")
+                    .allowCredentials(true);
             }
         };
     }
