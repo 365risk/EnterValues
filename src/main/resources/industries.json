@@ -1,11 +1,1 @@
-[{
-    "risks": [{
-        "riskName": "DDFDF",
-        "riskDetails": "<p>ADDFAD<\/p>",
-        "id": 25
-    }],
-    "imagePath": "",
-    "name": "a",
-    "descriptionHtml": "a.html",
-    "id": 24
-}]
+[{"risks":[{"imagePath":"images/risk1.png","name":"Risk Name","details":"Risk details","id":1}],"imagePath":"images/industry1.png","name":"Industry Name","descriptionHtml":"description.html","id":1},{"risks":[],"imagePath":"images/2024-7-26_19-02-27.png","name":"workinggit","descriptionHtml":"workinggit.html","id":26}]
