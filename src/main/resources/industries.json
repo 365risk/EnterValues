@@ -1,45 +1,11 @@
-[
-    {
-        "risks": [],
-        "imagePath": "images/2024-7-26_19-02-27.png",
-        "name": "workinggit",
-        "descriptionHtml": "workinggit.html",
-        "id": 26
-    },
-    {
-        "risks": [],
-        "name": "workinggit",
-        "descriptionHtml": "workinggit.html",
-        "id": 28
-    },
-    {
-        "risks": [],
-        "name": "workinggit",
-        "descriptionHtml": "workinggit.html",
-        "id": 29
-    },
-    {
-        "risks": [],
-        "name": "workinggit",
-        "descriptionHtml": "workinggit.html",
-        "id": 27
-    },
-    {
-        "risks": [],
-        "name": "workinggit",
-        "descriptionHtml": "workinggit.html",
-        "id": 30
-    },
-    {
-        "risks": [],
-        "name": "Abc",
-        "descriptionHtml": "Abc.html",
-        "id": 36
-    },
-    {
-        "risks": [],
+[{
+    "risks": [{
         "name": "a",
-        "descriptionHtml": "a.html",
-        "id": 37
-    }
-]
+        "details": "<p>b<\/p>",
+        "id": 38
+    }],
+    "imagePath": "images/2024-7-26_19-02-27.png",
+    "name": "workinggit",
+    "descriptionHtml": "workinggit.html",
+    "id": 26
+}]
