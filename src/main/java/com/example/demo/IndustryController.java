@@ -312,7 +312,7 @@ public class IndustryController {
 
                 jsonArray.put(jsonObject);
             }
-            writer.write(jsonArray.toString());
+            writer.write(jsonArray.toString(4));
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Failed to save industries to file", e);
         }
