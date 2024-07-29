@@ -2,7 +2,7 @@
     "risks": [
         {
             "imagePath": "images/credit-risk.png",
-            "name": "Credit risk",
+            "name": "Credit Risk",
             "details": "<p>The risk that a borrower or counterparty will default on their loan obligations.<\/p>",
             "id": 1
         },
