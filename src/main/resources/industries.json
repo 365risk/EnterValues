@@ -1,5 +1,9 @@
 [{
-    "risks": [],
+    "risks": [{
+        "name": "A",
+        "details": "<p>B<\/p>",
+        "id": 44
+    }],
     "name": "A",
     "descriptionHtml": "A.html",
     "id": 43
