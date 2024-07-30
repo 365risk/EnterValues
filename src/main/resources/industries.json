@@ -1,56 +1,27 @@
 [
-    {
-        "risks": [],
-        "name": "INDUSTRY MANAGER",
-        "descriptionHtml": "INDUSTRY MANAGER.html",
-        "id": 45
-    },
-    {
-        "risks": [],
-        "name": "A",
-        "descriptionHtml": "A.html",
-        "id": 47
-    },
-    {
-        "risks": [],
-        "name": "c",
-        "descriptionHtml": "c.html",
-        "id": 48
-    },
-    {
-        "risks": [],
-        "name": "ff",
-        "descriptionHtml": "ff.html",
-        "id": 49
-    },
-    {
-        "risks": [],
-        "name": "ded",
-        "descriptionHtml": "ded.html",
-        "id": 50
-    },
-    {
-        "risks": [],
-        "name": "dd",
-        "descriptionHtml": "dd.html",
-        "id": 51
-    },
-    {
-        "risks": [],
-        "name": "hhh",
-        "descriptionHtml": "hhh.html",
-        "id": 52
-    },
-    {
-        "risks": [],
-        "name": "ab",
-        "descriptionHtml": "ab.html",
-        "id": 53
-    },
-    {
-        "risks": [],
-        "name": "A",
-        "descriptionHtml": "A.html",
-        "id": 53
-    }
+{
+    "risks": [
+        {
+            "riskName": "ccc",
+            "imagePath": "images/2.png",
+            "riskDetails": "<p>cccc<\/p>",
+            "id": 1
+        },
+        {
+            "riskName": "c",
+            "riskDetails": "<p>c<\/p>",
+            "id": 1
+        }
+    ],
+    "name": "b",
+    "descriptionHtml": "b.html",
+    "id": 1
+},
+{
+    "risks": [],
+    "imagePath": "images/Screenshot 2022-11-06 212408.png",
+    "name": "bbb",
+    "descriptionHtml": "bbb.html",
+    "id": 1
+}
 ]
