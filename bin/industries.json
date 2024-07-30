@@ -1,0 +1,17 @@
+[
+    {
+        "id": 1,
+        "name": "Industry Name",
+        "descriptionHtml": "description.html",
+        "imagePath": "images/industry1.png",
+        "risks": [
+            {
+                "id": 1,
+                "name": "Risk Name",
+                "details": "Risk details",
+                "descriptionPath": "risk_description.html",
+                "imagePath": "images/risk1.png"
+            }
+        ]
+    }
+]
