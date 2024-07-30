@@ -1,11 +1,19 @@
-[{
-    "risks": [{
-        "imagePath": "images/demo.png",
-        "name": "RISK",
-        "details": "<p>RISK DETAILS<\/p>",
-        "id": 46
-    }],
-    "name": "INDUSTRY MANAGER",
-    "descriptionHtml": "INDUSTRY MANAGER.html",
-    "id": 45
-}]
+[
+    {
+        "risks": [{
+            "imagePath": "images/demo.png",
+            "name": "RISK",
+            "details": "<p>RISK DETAILS<\/p>",
+            "id": 46
+        }],
+        "name": "INDUSTRY MANAGER",
+        "descriptionHtml": "INDUSTRY MANAGER.html",
+        "id": 45
+    },
+    {
+        "risks": [],
+        "name": "A",
+        "descriptionHtml": "A.html",
+        "id": 47
+    }
+]
