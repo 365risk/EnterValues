@@ -1,5 +1,10 @@
 [{
-    "risks": [],
+    "risks": [{
+        "imagePath": "images/demo.png",
+        "name": "RISK",
+        "details": "<p>RISK DETAILS<\/p>",
+        "id": 46
+    }],
     "name": "INDUSTRY MANAGER",
     "descriptionHtml": "INDUSTRY MANAGER.html",
     "id": 45
