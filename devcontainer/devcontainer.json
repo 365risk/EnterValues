@@ -1,8 +1,0 @@
-{
-  "name": "Java",
-  "image": "mcr.microsoft.com/devcontainers/java:0-11",
-  "appPort": ["8080:8080"],
-  "postCreateCommand": "mvn clean install",
-  "postStartCommand": "./keep-alive.sh",
-  "remoteUser": "vscode"
-}

@@ -1,0 +1,14 @@
+{
+    "name": "My Project",
+    "image": "mcr.microsoft.com/vscode/devcontainers/java:0-11",
+    "forwardPorts": [8080],
+    "portsAttributes": {
+      "8080": {
+        "label": "Spring Boot App",
+        "onAutoForward": "notify",
+        "protocol": "http",
+        "visibility": "public"
+      }
+    }
+  }
+  
