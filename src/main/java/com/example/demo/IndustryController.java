@@ -20,14 +20,12 @@ public class IndustryController {
 
     private static final String HTML_DIR_PATH = "src/main/resources/html/";
     private static final String IMAGE_DIR_PATH = "src/main/resources/images/";
-    private static final String COUNTER_FILE_PATH = "src/main/resources/counter.txt";
     private static final AtomicLong counter = new AtomicLong(0);
     private static List<Industry> industries = new ArrayList<>();
 
     private static final Logger LOGGER = Logger.getLogger(IndustryController.class.getName());
 
     static {
-        loadCounterFromFile();
         loadIndustriesFromFile();
     }
 
@@ -48,10 +46,9 @@ public class IndustryController {
 
         industries.add(newIndustry);
         saveIndustriesToFile();
-        saveCounterToFile(); // Ensure counter value is saved
-
-        runGitCommands(); // Run Git commands after saving changes
-
+        executeGitCommand("git add .");
+        executeGitCommand("git commit -m \"Added new industry: " + name + "\"");
+        executeGitCommand("git push origin main origin main");
         return newIndustry;
     }
 
@@ -79,23 +76,25 @@ public class IndustryController {
         industryToUpdate.setDescriptionHtml(newDescriptionPath);
 
         if (!oldDescriptionPath.equals(newDescriptionPath)) {
-            deleteDescriptionHtml(HTML_DIR_PATH + oldDescriptionPath);
+            String oldFilePath = HTML_DIR_PATH + oldDescriptionPath;
+            deleteDescriptionHtml(oldFilePath);
         }
         saveDescriptionHtml(descriptionHtml, HTML_DIR_PATH + newDescriptionPath);
 
         if (image != null && !image.isEmpty()) {
             if (industryToUpdate.getImagePath() != null) {
-                deleteImage(IMAGE_DIR_PATH + industryToUpdate.getImagePath());
+                String oldImagePath = IMAGE_DIR_PATH + industryToUpdate.getImagePath();
+                deleteImage(oldImagePath);
             }
-            saveImage(image, IMAGE_DIR_PATH + image.getOriginalFilename());
-            industryToUpdate.setImagePath("images/" + image.getOriginalFilename());
+            String imageFileName = image.getOriginalFilename();
+            saveImage(image, IMAGE_DIR_PATH + imageFileName);
+            industryToUpdate.setImagePath("images/" + imageFileName);
         }
 
         saveIndustriesToFile();
-        saveCounterToFile(); // Ensure counter value is saved
-
-        runGitCommands(); // Run Git commands after saving changes
-
+        executeGitCommand("git add .");
+        executeGitCommand("git commit -m \"Updated industry: " + name + "\"");
+        executeGitCommand("git push origin main");
         return industryToUpdate;
     }
 
@@ -107,27 +106,31 @@ public class IndustryController {
                 .orElseThrow(() -> new RuntimeException("Industry not found with id: " + id));
 
         if (industry.getImagePath() != null) {
-            deleteImage(IMAGE_DIR_PATH + industry.getImagePath());
+            String imagePath = IMAGE_DIR_PATH + industry.getImagePath();
+            deleteImage(imagePath);
         }
 
         if (industry.getDescriptionHtml() != null) {
-            deleteDescriptionHtml(HTML_DIR_PATH + industry.getDescriptionHtml());
+            String htmlPath = HTML_DIR_PATH + industry.getDescriptionHtml();
+            deleteDescriptionHtml(htmlPath);
         }
 
         for (Risk risk : industry.getRisks()) {
             if (risk.getDescriptionPath() != null) {
-                deleteDescriptionHtml(HTML_DIR_PATH + risk.getDescriptionPath());
+                String riskHtmlPath = HTML_DIR_PATH + risk.getDescriptionPath();
+                deleteDescriptionHtml(riskHtmlPath);
             }
             if (risk.getImagePath() != null) {
-                deleteImage(IMAGE_DIR_PATH + risk.getImagePath());
+                String riskImagePath = IMAGE_DIR_PATH + risk.getImagePath();
+                deleteImage(riskImagePath);
             }
         }
 
         industries.removeIf(ind -> ind.getId().equals(id));
         saveIndustriesToFile();
-        saveCounterToFile(); // Ensure counter value is saved
-
-        runGitCommands(); // Run Git commands after saving changes
+        executeGitCommand("git add .");
+        executeGitCommand("git commit -m \"Deleted industry with id: " + id + "\"");
+        executeGitCommand("git push origin main");
     }
 
     @PostMapping("/{id}/risks")
@@ -143,20 +146,22 @@ public class IndustryController {
                 .orElseThrow(() -> new RuntimeException("Industry not found with id: " + id));
 
         Risk newRisk = new Risk(counter.incrementAndGet(), riskName, riskDetails);
+
         String descriptionFileName = riskName + ".html";
         saveDescriptionHtml(riskDetails, HTML_DIR_PATH + descriptionFileName);
         newRisk.setDescriptionPath("html/" + descriptionFileName);
 
         if (riskImage != null && !riskImage.isEmpty()) {
-            saveImage(riskImage, IMAGE_DIR_PATH + riskImage.getOriginalFilename());
-            newRisk.setImagePath("images/" + riskImage.getOriginalFilename());
+            String imageFileName = riskImage.getOriginalFilename();
+            saveImage(riskImage, IMAGE_DIR_PATH + imageFileName);
+            newRisk.setImagePath("images/" + imageFileName);
         }
 
         industry.getRisks().add(newRisk);
         saveIndustriesToFile();
-        saveCounterToFile(); // Ensure counter value is saved
-
-        runGitCommands(); // Run Git commands after saving changes
+        executeGitCommand("git add .");
+        executeGitCommand("git commit -m \"Added risk to industry with id: " + id + "\"");
+        executeGitCommand("git push origin main");
 
         return ResponseEntity.ok(newRisk);
     }
@@ -191,29 +196,32 @@ public class IndustryController {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Risk not found with id: " + riskId));
 
-        String oldDescriptionPath = existingRisk.getRiskName() + ".html";
+        String oldDescriptionPath = existingRisk.getDescriptionPath();
         String newDescriptionPath = "html/" + riskName + ".html";
         existingRisk.setRiskName(riskName);
         existingRisk.setRiskDetails(riskDetails);
 
         if (oldDescriptionPath != null && !oldDescriptionPath.equals(newDescriptionPath)) {
-            deleteDescriptionHtml(HTML_DIR_PATH + oldDescriptionPath);
+            String oldFilePath = HTML_DIR_PATH + oldDescriptionPath;
+            deleteDescriptionHtml(oldFilePath);
         }
         saveDescriptionHtml(riskDetails, HTML_DIR_PATH + riskName + ".html");
         existingRisk.setDescriptionPath(newDescriptionPath);
 
         if (riskImage != null && !riskImage.isEmpty()) {
             if (existingRisk.getImagePath() != null) {
-                deleteImage(IMAGE_DIR_PATH + existingRisk.getImagePath());
+                String oldImagePath = IMAGE_DIR_PATH + existingRisk.getImagePath();
+                deleteImage(oldImagePath);
             }
-            saveImage(riskImage, IMAGE_DIR_PATH + riskImage.getOriginalFilename());
-            existingRisk.setImagePath("images/" + riskImage.getOriginalFilename());
+            String imageFileName = riskImage.getOriginalFilename();
+            saveImage(riskImage, IMAGE_DIR_PATH + imageFileName);
+            existingRisk.setImagePath("images/" + imageFileName);
         }
 
         saveIndustriesToFile();
-        saveCounterToFile(); // Ensure counter value is saved
-
-        runGitCommands(); // Run Git commands after saving changes
+        executeGitCommand("git add .");
+        executeGitCommand("git commit -m \"Updated risk in industry with id: " + industryId + "\"");
+        executeGitCommand("git push origin main");
 
         return ResponseEntity.ok(existingRisk);
     }
@@ -230,41 +238,41 @@ public class IndustryController {
                 .findFirst()
                 .orElseThrow(() -> new RuntimeException("Risk not found with id: " + riskId));
 
-        if (risk.getDescriptionPath() != null) {
-            deleteDescriptionHtml(HTML_DIR_PATH + risk.getDescriptionPath());
-        }
         if (risk.getImagePath() != null) {
-            deleteImage(IMAGE_DIR_PATH + risk.getImagePath());
+            String riskImagePath = IMAGE_DIR_PATH + risk.getImagePath();
+            deleteImage(riskImagePath);
+        }
+
+        if (risk.getDescriptionPath() != null) {
+            String riskDescriptionPath = HTML_DIR_PATH + risk.getDescriptionPath();
+            deleteDescriptionHtml(riskDescriptionPath);
         }
 
         industry.getRisks().removeIf(r -> r.getId().equals(riskId));
         saveIndustriesToFile();
-        saveCounterToFile(); // Ensure counter value is saved
-
-        runGitCommands(); // Run Git commands after saving changes
+        executeGitCommand("git add .");
+        executeGitCommand("git commit -m \"Deleted risk with id: " + riskId + " from industry with id: " + industryId + "\"");
+        executeGitCommand("git push origin main");
     }
 
-    private static void saveDescriptionHtml(String descriptionHtml, String filePath) {
+    private void saveDescriptionHtml(String content, String filePath) {
         try (BufferedWriter writer = new BufferedWriter(new FileWriter(filePath))) {
-            writer.write(descriptionHtml);
+            writer.write(content);
         } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Failed to save description HTML", e);
+            LOGGER.log(Level.SEVERE, "Failed to save HTML description", e);
         }
     }
 
-    private static void saveImageAndSetImagePath(MultipartFile image, Industry industry) {
-        if (image != null && !image.isEmpty()) {
-            try {
-                String imagePath = IMAGE_DIR_PATH + image.getOriginalFilename();
-                Files.copy(image.getInputStream(), Paths.get(imagePath));
-                industry.setImagePath("images/" + image.getOriginalFilename());
-            } catch (IOException e) {
-                LOGGER.log(Level.SEVERE, "Failed to save image", e);
+    private void deleteDescriptionHtml(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            if (!file.delete()) {
+                LOGGER.log(Level.SEVERE, "Failed to delete HTML file: {0}", filePath);
             }
         }
     }
 
-    private static void saveImage(MultipartFile image, String filePath) {
+    private void saveImage(MultipartFile image, String filePath) {
         try {
             Files.copy(image.getInputStream(), Paths.get(filePath));
         } catch (IOException e) {
@@ -272,46 +280,56 @@ public class IndustryController {
         }
     }
 
-    private static void deleteImage(String filePath) {
-        try {
-            Files.deleteIfExists(Paths.get(filePath));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Failed to delete image", e);
-        }
-    }
-
-    private static void deleteDescriptionHtml(String filePath) {
-        try {
-            Files.deleteIfExists(Paths.get(filePath));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Failed to delete description HTML", e);
-        }
-    }
-
-    private static void saveIndustriesToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/industries.json"))) {
-            JSONArray jsonArray = new JSONArray();
-            for (Industry industry : industries) {
-                JSONObject jsonObject = new JSONObject();
-                jsonObject.put("id", industry.getId());
-                jsonObject.put("name", industry.getName());
-                jsonObject.put("descriptionHtml", industry.getDescriptionHtml());
-                jsonObject.put("imagePath", industry.getImagePath());
-
-                JSONArray risksArray = new JSONArray();
-                for (Risk risk : industry.getRisks()) {
-                    JSONObject riskObject = new JSONObject();
-                    riskObject.put("id", risk.getId());
-                    riskObject.put("name", risk.getRiskName());
-                    riskObject.put("details", risk.getRiskDetails());
-                    riskObject.put("descriptionPath", risk.getDescriptionPath());
-                    riskObject.put("imagePath", risk.getImagePath());
-                    risksArray.put(riskObject);
-                }
-                jsonObject.put("risks", risksArray);
-
-                jsonArray.put(jsonObject);
+    private void deleteImage(String filePath) {
+        File file = new File(filePath);
+        if (file.exists()) {
+            if (!file.delete()) {
+                LOGGER.log(Level.SEVERE, "Failed to delete image file: {0}", filePath);
             }
+        }
+    }
+
+    private void saveImageAndSetImagePath(MultipartFile image, Industry industry) {
+        if (image != null && !image.isEmpty()) {
+            // Generate a unique filename
+            String imageFileName = UUID.randomUUID().toString() + "-" + image.getOriginalFilename();
+            String imagePath = IMAGE_DIR_PATH + imageFileName;
+
+            // Save the image
+            try {
+                Files.copy(image.getInputStream(), Paths.get(imagePath));
+                // Set the image path in the industry object
+                industry.setImagePath("images/" + imageFileName);
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Failed to save image", e);
+            }
+        }
+    }
+
+    private void saveIndustriesToFile() {
+        JSONArray jsonArray = new JSONArray();
+        for (Industry industry : industries) {
+            JSONObject jsonIndustry = new JSONObject();
+            jsonIndustry.put("id", industry.getId());
+            jsonIndustry.put("name", industry.getName());
+            jsonIndustry.put("descriptionHtml", industry.getDescriptionHtml());
+            jsonIndustry.put("imagePath", industry.getImagePath());
+
+            JSONArray jsonRisks = new JSONArray();
+            for (Risk risk : industry.getRisks()) {
+                JSONObject jsonRisk = new JSONObject();
+                jsonRisk.put("id", risk.getId());
+                jsonRisk.put("riskName", risk.getRiskName());
+                jsonRisk.put("riskDetails", risk.getRiskDetails());
+                jsonRisk.put("imagePath", risk.getImagePath());
+                jsonRisks.put(jsonRisk);
+            }
+            jsonIndustry.put("risks", jsonRisks);
+
+            jsonArray.put(jsonIndustry);
+        }
+
+        try (BufferedWriter writer = new BufferedWriter(new FileWriter("src/main/resources/industries.json"))) {
             writer.write(jsonArray.toString(4));
         } catch (IOException e) {
             LOGGER.log(Level.SEVERE, "Failed to save industries to file", e);
@@ -319,70 +337,59 @@ public class IndustryController {
     }
 
     private static void loadIndustriesFromFile() {
-        try {
-            String content = new String(Files.readAllBytes(Paths.get("src/main/resources/industries.json")));
-            JSONArray jsonArray = new JSONArray(content);
-            industries.clear();
-
-            for (int i = 0; i < jsonArray.length(); i++) {
-                JSONObject jsonObject = jsonArray.getJSONObject(i);
-                Industry industry = new Industry(
-                        jsonObject.getLong("id"),
-                        jsonObject.getString("name"),
-                        jsonObject.getString("descriptionHtml"));
-                industry.setImagePath(jsonObject.optString("imagePath", null));
-
-                JSONArray risksArray = jsonObject.getJSONArray("risks");
-                for (int j = 0; j < risksArray.length(); j++) {
-                    JSONObject riskObject = risksArray.getJSONObject(j);
-                    Risk risk = new Risk(
-                            riskObject.getLong("id"),
-                            riskObject.getString("name"),
-                            riskObject.getString("details"));
-                    risk.setDescriptionPath(riskObject.optString("descriptionPath", null));
-                    risk.setImagePath(riskObject.optString("imagePath", null));
-                    industry.getRisks().add(risk);
+        File file = new File("src/main/resources/industries.json");
+        if (file.exists()) {
+            try (BufferedReader reader = new BufferedReader(new FileReader(file))) {
+                StringBuilder content = new StringBuilder();
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    content.append(line);
                 }
-                industries.add(industry);
+                JSONArray jsonArray = new JSONArray(content.toString());
+                for (int i = 0; i < jsonArray.length(); i++) {
+                    JSONObject jsonIndustry = jsonArray.getJSONObject(i);
+                    Long id = jsonIndustry.getLong("id");
+                    String name = jsonIndustry.getString("name");
+                    String descriptionHtml = jsonIndustry.getString("descriptionHtml");
+                    String imagePath = jsonIndustry.optString("imagePath", null);
+
+                    Industry industry = new Industry(id, name, descriptionHtml);
+                    industry.setImagePath(imagePath);
+
+                    JSONArray jsonRisks = jsonIndustry.getJSONArray("risks");
+                    for (int j = 0; j < jsonRisks.length(); j++) {
+                        JSONObject jsonRisk = jsonRisks.getJSONObject(j);
+                        Long riskId = jsonRisk.getLong("id");
+                        String riskName = jsonRisk.getString("riskName");
+                        String riskDetails = jsonRisk.getString("riskDetails");
+                        String riskImagePath = jsonRisk.optString("imagePath", null);
+
+                        Risk risk = new Risk(riskId, riskName, riskDetails);
+                        risk.setImagePath(riskImagePath);
+
+                        industry.getRisks().add(risk);
+                    }
+
+                    industries.add(industry);
+                }
+            } catch (IOException e) {
+                LOGGER.log(Level.SEVERE, "Failed to load industries from file", e);
             }
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Failed to load industries from file", e);
         }
     }
 
-    private static void saveCounterToFile() {
-        try (BufferedWriter writer = new BufferedWriter(new FileWriter(COUNTER_FILE_PATH))) {
-            writer.write(Long.toString(counter.get()));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Failed to save counter to file", e);
-        }
-    }
-
-    private static void loadCounterFromFile() {
+    private void executeGitCommand(String command) {
         try {
-            String content = new String(Files.readAllBytes(Paths.get(COUNTER_FILE_PATH)));
-            counter.set(Long.parseLong(content));
-        } catch (IOException e) {
-            LOGGER.log(Level.SEVERE, "Failed to load counter from file", e);
-        }
-    }
-
-    private void runGitCommands() {
-        try {
-            ProcessBuilder builder = new ProcessBuilder();
-
-            // Run `git add .`
-            builder.command("git", "add", ".").start().waitFor();
-
-            // Run `git commit -m "version files"`
-            builder.command("git", "commit", "-m", "version files").start().waitFor();
-
-            // Run `git push origin`
-            builder.command("git", "push", "origin").start().waitFor();
-
-            LOGGER.log(Level.INFO, "Git commands executed successfully.");
+            Process process = Runtime.getRuntime().exec(command);
+            process.waitFor();
+            try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+                String line;
+                while ((line = reader.readLine()) != null) {
+                    LOGGER.info(line);
+                }
+            }
         } catch (IOException | InterruptedException e) {
-            LOGGER.log(Level.SEVERE, "Failed to run Git commands", e);
+            LOGGER.log(Level.SEVERE, "Failed to execute git command: " + command, e);
         }
     }
 }
