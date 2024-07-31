@@ -47,12 +47,9 @@ public class IndustryController {
 
         industries.add(newIndustry);
         saveIndustriesToFile();
-        
-        try {
+    
             runGitCommands("Added industry: " + name);
-        } catch (IOException | InterruptedException e) {
-            e.printStackTrace();
-        }
+  
 
         return newIndustry;
     }
@@ -394,20 +391,58 @@ public class IndustryController {
         }
     }
 
-    private void runGitCommands(String commitMessage) throws IOException, InterruptedException {
-        ProcessBuilder pb = new ProcessBuilder("git", "add", ".");
-        pb.directory(new File(System.getProperty("user.dir")));
-        Process p = pb.start();
-        p.waitFor();
-
-        pb = new ProcessBuilder("git", "commit", "-m", commitMessage);
-        pb.directory(new File(System.getProperty("user.dir")));
-        p = pb.start();
-        p.waitFor();
-
-        pb = new ProcessBuilder("git", "push", "--force");
-        pb.directory(new File(System.getProperty("user.dir")));
-        p = pb.start();
-        p.waitFor();
+    
+    private void runGitCommands(String commitMessage) {
+        try {
+            // Set up the process builders for each Git command
+            ProcessBuilder addBuilder = new ProcessBuilder("git", "add", ".");
+            ProcessBuilder commitBuilder = new ProcessBuilder("git", "commit", "-m", commitMessage);
+            ProcessBuilder pushBuilder = new ProcessBuilder("git", "push", "--force");
+    
+            // Set the working directory to your repository path
+            addBuilder.directory(new File(System.getProperty("user.dir")));
+            commitBuilder.directory(new File(System.getProperty("user.dir")));
+            pushBuilder.directory(new File(System.getProperty("user.dir")));
+    
+            // Start the processes and wait for them to complete
+            Process addProcess = addBuilder.start();
+            addProcess.waitFor();
+            
+            Process commitProcess = commitBuilder.start();
+            commitProcess.waitFor();
+            
+            Process pushProcess = pushBuilder.start();
+            pushProcess.waitFor();
+    
+            // Capture the output and errors for debugging
+            printProcessOutput(addProcess);
+            printProcessOutput(commitProcess);
+            printProcessOutput(pushProcess);
+            
+        } catch (IOException | InterruptedException e) {
+            e.printStackTrace();
+            throw new RuntimeException("Failed to execute Git commands", e);
+        }
     }
+    
+    private void printProcessOutput(Process process) throws IOException {
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getInputStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.out.println(line);
+            }
+        }
+        try (BufferedReader reader = new BufferedReader(new InputStreamReader(process.getErrorStream()))) {
+            String line;
+            while ((line = reader.readLine()) != null) {
+                System.err.println(line);
+            }
+        }
+    }
+    
+
+
+
+
+
 }
