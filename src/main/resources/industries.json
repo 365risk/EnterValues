@@ -40,6 +40,13 @@
             {
                 "riskName": "9999",
                 "descriptionPath": "html/9999.html",
+                "imagePath": "",
+                "riskDetails": "",
+                "id": 1
+            },
+            {
+                "riskName": "klk",
+                "descriptionPath": "html/klk.html",
                 "riskDetails": "",
                 "id": 1
             }
