@@ -1,6 +1,10 @@
 [
     {
-        "risks": [],
+        "risks": [{
+            "riskName": "llll",
+            "riskDetails": "<p>lll<\/p>",
+            "id": 1
+        }],
         "imagePath": "",
         "name": "l",
         "descriptionHtml": "l.html",
@@ -8,6 +12,7 @@
     },
     {
         "risks": [],
+        "imagePath": "",
         "name": "l",
         "descriptionHtml": "l.html",
         "id": 2
