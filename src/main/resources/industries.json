@@ -47,6 +47,13 @@
             {
                 "riskName": "klk",
                 "descriptionPath": "html/klk.html",
+                "imagePath": "",
+                "riskDetails": "",
+                "id": 1
+            },
+            {
+                "riskName": "kkkkkkk787",
+                "descriptionPath": "html/kkkkkkk787.html",
                 "riskDetails": "",
                 "id": 1
             }

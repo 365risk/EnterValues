@@ -1,8 +1,11 @@
 package com.example.demo;
 
+import java.util.concurrent.atomic.AtomicLong;
+
 public class Risk {
 
-    private static long idCounter = 1; // Static counter for auto-incrementing IDs
+    private static AtomicLong idCounter = new AtomicLong(1); // AtomicLong for thread-safe auto-incrementing IDs
+
     private Long id;
     private String riskName;
     private String riskDetails;
@@ -12,7 +15,7 @@ public class Risk {
     // Default constructor
     public Risk() {}
 
-    // Constructor with all fields
+    // Constructor with ID and all fields
     public Risk(Long id, String riskName, String riskDetails, String imagePath, String descriptionPath) {
         this.id = id;
         this.riskName = riskName;
@@ -21,9 +24,14 @@ public class Risk {
         this.descriptionPath = descriptionPath;
     }
 
-    // Constructor with required fields
+    // Constructor with ID and required fields
     public Risk(Long id, String riskName, String riskDetails) {
         this(id, riskName, riskDetails, null, null); // Default imagePath and descriptionPath to null
+    }
+
+    // Static method to get the next ID
+    public static long getNextId() {
+        return idCounter.getAndIncrement();
     }
 
     // Getters and setters
