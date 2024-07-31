@@ -2,32 +2,32 @@ package com.example.demo;
 
 public class Risk {
 
+    private static long idCounter = 1; // Static counter for auto-incrementing IDs
     private Long id;
     private String riskName;
     private String riskDetails;
     private String imagePath;
+    private String descriptionPath; // Optional field
 
-    public Risk() {
-        // Default constructor
-    }
+    // Default constructor
+    public Risk() {}
 
-    public Risk(Long id, String riskName, String riskDetails) {
+    // Constructor with all fields
+    public Risk(Long id, String riskName, String riskDetails, String imagePath, String descriptionPath) {
         this.id = id;
         this.riskName = riskName;
         this.riskDetails = riskDetails;
+        this.imagePath = imagePath;
+        this.descriptionPath = descriptionPath;
+    }
+
+    // Constructor with required fields
+    public Risk(Long id, String riskName, String riskDetails) {
+        this(id, riskName, riskDetails, null, null); // Default imagePath and descriptionPath to null
     }
 
     // Getters and setters
-
-    public Risk(long long1, String string, String string2, String optString, String optString2) {
-		// TODO Auto-generated constructor stub
-	}
-
-	public Risk(String name, String descriptionPath) {
-		// TODO Auto-generated constructor stub
-	}
-
-	public Long getId() {
+    public Long getId() {
         return id;
     }
 
@@ -59,13 +59,22 @@ public class Risk {
         this.imagePath = imagePath;
     }
 
-	public String getDescriptionPath() {
-		// TODO Auto-generated method stub
-		return null;
-	}
+    public String getDescriptionPath() {
+        return descriptionPath;
+    }
 
-	public void setDescriptionPath(String string) {
-		// TODO Auto-generated method stub
-		
-	}
+    public void setDescriptionPath(String descriptionPath) {
+        this.descriptionPath = descriptionPath;
+    }
+
+    @Override
+    public String toString() {
+        return "Risk{" +
+                "id=" + id +
+                ", riskName='" + riskName + '\'' +
+                ", riskDetails='" + riskDetails + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                ", descriptionPath='" + descriptionPath + '\'' +
+                '}';
+    }
 }

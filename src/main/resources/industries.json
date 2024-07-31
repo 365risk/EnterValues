@@ -3,12 +3,14 @@
         "risks": [
             {
                 "riskName": "llll",
+                "descriptionPath": "",
                 "imagePath": "",
                 "riskDetails": "<p>lll<\/p>",
                 "id": 1
             },
             {
                 "riskName": ",,,,,",
+                "descriptionPath": "",
                 "imagePath": "",
                 "riskDetails": "<p>,,,,,<\/p>",
                 "id": 1
@@ -20,11 +22,21 @@
         "id": 1
     },
     {
-        "risks": [{
-            "riskName": ",,,,,,ll",
-            "riskDetails": "",
-            "id": 1
-        }],
+        "risks": [
+            {
+                "riskName": ",,,,,,ll",
+                "descriptionPath": "",
+                "imagePath": "",
+                "riskDetails": "",
+                "id": 1
+            },
+            {
+                "riskName": "kkkkkk7",
+                "descriptionPath": "html/kkkkkk7.html",
+                "riskDetails": "",
+                "id": 1
+            }
+        ],
         "imagePath": "",
         "name": "l",
         "descriptionHtml": "l.html",
