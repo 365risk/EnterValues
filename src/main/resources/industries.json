@@ -1,8 +1,9 @@
 [
     {
         "risks": [{
-            "riskName": "jdjdjdjdj",
-            "riskDetails": "<p>jjjjj<\/p>",
+            "riskName": "dddd",
+            "imagePath": "365risk.jpg",
+            "riskDetails": "<p>d<\/p><p>ddd<\/p>",
             "id": 1
         }],
         "imagePath": "",
@@ -16,12 +17,5 @@
         "name": "Abc2",
         "descriptionHtml": "Abc2.html",
         "id": 2
-    },
-    {
-        "risks": [],
-        "imagePath": "",
-        "name": "abc",
-        "descriptionHtml": "abc.html",
-        "id": 3
     }
 ]
