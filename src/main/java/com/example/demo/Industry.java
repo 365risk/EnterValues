@@ -6,21 +6,24 @@ import java.util.List;
 public class Industry {
     private Long id;
     private String name;
-    private String descriptionHtml; // HTML description file path
-    private String imagePath; // Path to the image
+    private String descriptionHtml;
+    private String imagePath;
     private List<Risk> risks = new ArrayList<>();
 
-    public Industry() {
-    }
-
+    // Constructor without imagePath
     public Industry(Long id, String name, String descriptionHtml) {
         this.id = id;
         this.name = name;
         this.descriptionHtml = descriptionHtml;
     }
 
-    // Getters and Setters
+    // Constructor with imagePath
+    public Industry(Long id, String name, String descriptionHtml, String imagePath) {
+        this(id, name, descriptionHtml);
+        this.imagePath = imagePath;
+    }
 
+    // Getters and setters
     public Long getId() {
         return id;
     }
@@ -59,5 +62,16 @@ public class Industry {
 
     public void setRisks(List<Risk> risks) {
         this.risks = risks;
+    }
+
+    @Override
+    public String toString() {
+        return "Industry{" +
+                "id=" + id +
+                ", name='" + name + '\'' +
+                ", descriptionHtml='" + descriptionHtml + '\'' +
+                ", imagePath='" + imagePath + '\'' +
+                ", risks=" + risks +
+                '}';
     }
 }
