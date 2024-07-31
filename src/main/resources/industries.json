@@ -9,6 +9,7 @@
             },
             {
                 "riskName": ",,,,,",
+                "imagePath": "",
                 "riskDetails": "<p>,,,,,<\/p>",
                 "id": 1
             }
@@ -19,7 +20,11 @@
         "id": 1
     },
     {
-        "risks": [],
+        "risks": [{
+            "riskName": ",,,,,,ll",
+            "riskDetails": "",
+            "id": 1
+        }],
         "imagePath": "",
         "name": "l",
         "descriptionHtml": "l.html",
