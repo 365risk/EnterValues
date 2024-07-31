@@ -1,43 +1,6 @@
-[
-    {
-        "risks": [],
-        "imagePath": "",
-        "name": "llll",
-        "descriptionHtml": "llll.html",
-        "id": 1
-    },
-    {
-        "risks": [],
-        "imagePath": "",
-        "name": "llllll",
-        "descriptionHtml": "llllll.html",
-        "id": 1
-    },
-    {
-        "risks": [],
-        "imagePath": "",
-        "name": "lllllll",
-        "descriptionHtml": "lllllll.html",
-        "id": 2
-    },
-    {
-        "risks": [],
-        "imagePath": "",
-        "name": "lll",
-        "descriptionHtml": "lll.html",
-        "id": 3
-    },
-    {
-        "risks": [],
-        "imagePath": "2024-7-26_19-02-27.png",
-        "name": "abc",
-        "descriptionHtml": "abc.html",
-        "id": 4
-    },
-    {
-        "risks": [],
-        "name": ",,,,,",
-        "descriptionHtml": ",,,,,.html",
-        "id": 5
-    }
-]
+[{
+    "risks": [],
+    "name": "abc",
+    "descriptionHtml": "abc.html",
+    "id": 1
+}]
