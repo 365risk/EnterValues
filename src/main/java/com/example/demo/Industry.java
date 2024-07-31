@@ -4,6 +4,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class Industry {
+    private static long idCounter = 1; // Static counter for IDs
     private Long id;
     private String name;
     private String descriptionHtml;
@@ -12,7 +13,7 @@ public class Industry {
 
     // Constructor without imagePath
     public Industry(Long id, String name, String descriptionHtml) {
-        this.id = id;
+        this.id = id; // Use the provided id
         this.name = name;
         this.descriptionHtml = descriptionHtml;
     }
@@ -20,6 +21,19 @@ public class Industry {
     // Constructor with imagePath
     public Industry(Long id, String name, String descriptionHtml, String imagePath) {
         this(id, name, descriptionHtml);
+        this.imagePath = imagePath;
+    }
+
+    // Constructor that auto-generates the id
+    public Industry(String name, String descriptionHtml) {
+        this.id = idCounter++; // Auto-generate id
+        this.name = name;
+        this.descriptionHtml = descriptionHtml;
+    }
+
+    // Constructor with imagePath that auto-generates the id
+    public Industry(String name, String descriptionHtml, String imagePath) {
+        this(name, descriptionHtml);
         this.imagePath = imagePath;
     }
 
