@@ -1,10 +1,8 @@
 package com.example.demo;
 
-import java.util.concurrent.atomic.AtomicLong;
-
 public class Risk {
 
-    private static AtomicLong idCounter = new AtomicLong(1); // AtomicLong for thread-safe auto-incrementing IDs
+    private static long idCounter = 1; // Static counter for auto-incrementing IDs
 
     private Long id;
     private String riskName;
@@ -13,25 +11,30 @@ public class Risk {
     private String descriptionPath; // Optional field
 
     // Default constructor
-    public Risk() {}
+    public Risk() {
+        this.id = idCounter++; // Initialize ID and increment counter
+    }
 
-    // Constructor with ID and all fields
-    public Risk(Long id, String riskName, String riskDetails, String imagePath, String descriptionPath) {
-        this.id = id;
+    // Constructor with required fields
+    public Risk(Long id, String riskName, String riskDetails) {
+        this.id = idCounter++; // Initialize ID and increment counter
         this.riskName = riskName;
         this.riskDetails = riskDetails;
-        this.imagePath = imagePath;
+    }
+
+    // Constructor with all fields
+    public Risk(long long1, String string, String string2, String optString, String optString2) {
+        this.id = idCounter++; // Initialize ID and increment counter
+        this.riskName = string;
+        this.riskDetails = string2;
+        this.imagePath = optString;
+        this.descriptionPath = optString2;
+    }
+
+    public Risk(String name, String descriptionPath) {
+        this.id = idCounter++; // Initialize ID and increment counter
+        this.riskName = name;
         this.descriptionPath = descriptionPath;
-    }
-
-    // Constructor with ID and required fields
-    public Risk(Long id, String riskName, String riskDetails) {
-        this(id, riskName, riskDetails, null, null); // Default imagePath and descriptionPath to null
-    }
-
-    // Static method to get the next ID
-    public static long getNextId() {
-        return idCounter.getAndIncrement();
     }
 
     // Getters and setters
@@ -71,8 +74,8 @@ public class Risk {
         return descriptionPath;
     }
 
-    public void setDescriptionPath(String descriptionPath) {
-        this.descriptionPath = descriptionPath;
+    public void setDescriptionPath(String string) {
+        this.descriptionPath = string;
     }
 
     @Override
