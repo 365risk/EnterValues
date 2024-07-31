@@ -1,6 +1,16 @@
-[{
-    "risks": [],
-    "name": "abc",
-    "descriptionHtml": "abc.html",
-    "id": 1
-}]
+[
+    {
+        "risks": [],
+        "imagePath": "",
+        "name": "abc",
+        "descriptionHtml": "abc.html",
+        "id": 1
+    },
+    {
+        "risks": [],
+        "imagePath": "logo.png",
+        "name": "Abc2",
+        "descriptionHtml": "Abc2.html",
+        "id": 2
+    }
+]
