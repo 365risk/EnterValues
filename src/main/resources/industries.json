@@ -93,7 +93,13 @@
         "id": 2
     },
     {
-        "risks": [],
+        "risks": [{
+            "riskName": "ddddd1",
+            "descriptionPath": "html/ddddd1.html",
+            "riskDetails": "",
+            "id": 12
+        }],
+        "imagePath": "",
         "name": "dddddddddd",
         "descriptionHtml": "dddddddddd.html",
         "id": 3
